@@ -39,8 +39,8 @@ namespace BasicsForExperts.Web.Extensions
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .CircuitBreakerAsync(
-                handledEventsAllowedBeforeBreaking: 3,
-                durationOfBreak: TimeSpan.FromSeconds(10));
+                handledEventsAllowedBeforeBreaking: 5,
+                durationOfBreak: TimeSpan.FromSeconds(30));
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetFallbackPolicy()

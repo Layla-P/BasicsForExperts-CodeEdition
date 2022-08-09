@@ -17,6 +17,11 @@ public static partial class WebApplicationExtensions
             };
         });
 
+        app.MapGet("/users", async (WaffleDbContext context) =>
+        {
+            context.Database.EnsureCreated();
+            return await context.Users.Include(u => u.Orders).ToListAsync();
+        });
         return app;
     }
 }

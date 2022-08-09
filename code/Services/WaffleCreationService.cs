@@ -1,5 +1,6 @@
 ﻿using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Entities;
+using System.Text.Json;
 
 namespace BasicsForExperts.Web.Services
 {
@@ -24,10 +25,8 @@ namespace BasicsForExperts.Web.Services
 
         public async Task<(List<OrderTopping> toppings, List<string> bases)> StartWaffleCreation()
         {
-            var ingredientDtos = await _waffleIngredientService.GetIngredients();
-            var toppings = new List<OrderTopping>();
-
-            toppings = ingredientDtos
+            var ingedients = await _waffleIngredientService.GetIngredients();
+            var toppings = ingedients
                 .Select(i => new OrderTopping { Id = i.Id, Name = i.Name, WaffleType = i.Type }).ToList();
 
             List<string> bases = new() { "round", "square", "heart" };

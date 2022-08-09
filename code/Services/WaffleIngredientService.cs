@@ -1,4 +1,8 @@
 ﻿using BasicsForExperts.Web.DTOs;
+using Microsoft.Extensions.Options;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace BasicsForExperts.Web.Services
 {
@@ -13,9 +17,19 @@ namespace BasicsForExperts.Web.Services
 
         public async Task<List<ToppingDto>> GetIngredients()
         { 
-            var responseString = await _httpClient.GetFromJsonAsync<List<ToppingDto>>(URL);
             
-            return responseString ?? new List<ToppingDto>();
+            var response = await _httpClient.GetAsync("http://localhost:7198/api/GetIngredients");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("---> response is A-okay!");
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var toppings = JsonSerializer.Deserialize<List<ToppingDto>>(responseBody);
+                return toppings;
+            }
+            //handle error here
+            return new List<ToppingDto>();
+            
         }
     }
 }

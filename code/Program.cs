@@ -19,8 +19,8 @@ builder.Services.AddSwaggerGen();
 
 //Adding dependencies
 // Add an HttpClient that's available to any class requesting HttpClient - this will be managed by the HttpClientFactory
-builder.Services.AddHttpClient();
-builder.Services.AddSingleton<WaffleIngredientService>();
+//builder.Services.AddHttpClient();
+//builder.Services.AddSingleton<WaffleIngredientService>();
 builder.Services.AddSingleton<IWaffleCreationService, WaffleCreationService>();
 
 //builder.Services.AddDatabases(builder.Configuration);
@@ -31,7 +31,7 @@ builder.Services.AddSingleton<IWaffleCreationService, WaffleCreationService>();
 //builder.Services.AddCustomSerializers();
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-//builder.Services.AddClientsAndPolicies();
+builder.Services.AddClientsAndPolicies();
 
 
 
@@ -49,9 +49,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 
 app.MapControllers();
+
 
 
 // Minimal APIs architecture allows us to add lightweight api endpoints directly to the WebApplication without the need for a controller
@@ -64,10 +64,11 @@ app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
         });
 
 // If we have a lot of apis, the program file could get messy, so just like everything else, we can pull it out into an extension method
-await app.AddApisAsync();
+//await app.AddApisAsync();
 
 // The following extension method shows how to access Eureka to get registered apps.
 
 
 app.Run();
 
+public partial class Program { }

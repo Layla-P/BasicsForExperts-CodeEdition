@@ -1,20 +1,23 @@
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Net;
 
 namespace BasicsForExperts.Web.Controllers;
 
 [ApiController]
-[Route("api/layla")]
+[Route("[controller]")]
 public class WaffleOrderController : ControllerBase
 {
     //private readonly WaffleCreationService _waffleCreationService;
     private readonly IWaffleCreationService _waffleCreationService;
+    private readonly WaffleIngredientService _ingredientService;
 
-    public WaffleOrderController(IWaffleCreationService waffleCreationService)
+    public WaffleOrderController(IWaffleCreationService waffleCreationService, WaffleIngredientService ingredientService)
     {
         _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
-
+        _ingredientService =   ingredientService ?? throw new ArgumentNullException(nameof(ingredientService));
     }
 
     //public WaffleOrderController(WaffleCreationService waffleCreationService)
@@ -29,6 +32,24 @@ public class WaffleOrderController : ControllerBase
     //        .First(x => x.GetType() == typeof(WaffleCreationService)) ?? throw new ArgumentNullException("WaffleCreationService"); ;
 
     //}
+
+    //[HttpGet("/ingredients")]
+    //public async Task<ActionResult> GetIngredients()
+    //{
+       
+    //    var httpResponseMessage = await _ingredientService.GetIngredients();
+
+       
+    //    if (httpResponseMessage.IsSuccessStatusCode)
+    //    {
+    //        var ingredients = await httpResponseMessage.Content.ReadAsStringAsync();
+    //        return Ok(ingredients);
+    //    }
+
+
+    //    return StatusCode((int)httpResponseMessage.StatusCode, httpResponseMessage.Content.ReadAsStringAsync());
+    //}
+
 
     [HttpGet]
     //[Route("Options")]

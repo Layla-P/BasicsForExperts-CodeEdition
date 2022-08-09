@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Ingredients.Api": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7198",
+      "launchBrowser": false
+    }
+  }
+}
