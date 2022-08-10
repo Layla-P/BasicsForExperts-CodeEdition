@@ -1,5 +1,9 @@
+using BasicsForExperts.Web.DTOs;
+using BasicsForExperts.Web.Entities;
 using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Services;
+using Polly.CircuitBreaker;
+using System.Text.Json;
 // most of the general using statements are now implicit.
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,12 +60,16 @@ app.MapControllers();
 
 // Minimal APIs architecture allows us to add lightweight api endpoints directly to the WebApplication without the need for a controller
 
-app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) => 
-        {
-            var response = await wcs.StartWaffleCreation();
-           return new { toppings = response.toppings, bases = response.bases 
-            };
-        });
+app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
+{
+    var response = await wcs.StartWaffleCreation();
+    var stringContent = await response.Content.ReadAsStringAsync();
+    var content = JsonSerializer
+        .Deserialize<IngredientsDto>(stringContent);
+
+    return new { toppings = content.Toppings, bases = content.Bases };
+
+});
 
 // If we have a lot of apis, the program file could get messy, so just like everything else, we can pull it out into an extension method
 //await app.AddApisAsync();

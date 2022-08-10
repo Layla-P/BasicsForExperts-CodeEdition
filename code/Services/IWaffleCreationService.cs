@@ -5,7 +5,7 @@ namespace BasicsForExperts.Web.Services
 {
     public interface IWaffleCreationService
     {
-        Task<(List<OrderTopping> toppings, List<string> bases)> StartWaffleCreation();
+        Task<HttpResponseMessage> StartWaffleCreation();
         Task<Order> CreateWaffle(Order order);
 
     }

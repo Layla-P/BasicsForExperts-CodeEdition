@@ -1,7 +1,4 @@
 ﻿using BasicsForExperts.Web.DTOs;
-using Microsoft.Extensions.Options;
-using System.Net;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace BasicsForExperts.Web.Services
@@ -22,7 +19,7 @@ namespace BasicsForExperts.Web.Services
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("---> response is A-okay!");
+                Console.WriteLine(">>>>>>>>>>>>> response is A-okay!");
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var toppings = JsonSerializer.Deserialize<List<ToppingDto>>(responseBody);
                 return toppings;

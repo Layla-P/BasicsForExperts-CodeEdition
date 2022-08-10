@@ -36,7 +36,7 @@ namespace Ingredients.Api
             {
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 log.LogCritical("ERROR ERROR");
-            }
+        }
             else
             {
                 log.LogCritical("All is good");

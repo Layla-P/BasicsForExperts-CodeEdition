@@ -1,66 +1,53 @@
 ﻿using BasicsForExperts.Web.Services;
 using System.Net;
 using Polly;
-using Polly.Extensions.Http;
+using Polly.CircuitBreaker;
 
 namespace BasicsForExperts.Web.Extensions
 {
     public static partial class IServiceCollectionExtensions
     {
+
         //https://github.com/App-vNext/Polly
         public static IServiceCollection AddClientsAndPolicies(this IServiceCollection services)
         {
             // Instead of just using services.AddHttpClient()
             services.AddHttpClient();
 
-            // Add a named client
+            IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
+                Policy.WrapAsync(FallbackPolicy, GetRetryPolicy, CircuitBreakerPolicy);
 
-            // We can also create a strongly typed HttpClient, such as this one
             services.AddHttpClient<WaffleIngredientService>()
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy())
-                .AddPolicyHandler(GetFallbackPolicy());
-
-          
+                    .AddPolicyHandler(wrapOfRetryAndFallback);
 
             return services;
         }
 
-        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+
+        public static readonly AsyncCircuitBreakerPolicy<HttpResponseMessage> CircuitBreakerPolicy =
+           Policy
+               .HandleResult<HttpResponseMessage>(message => message.StatusCode == HttpStatusCode.InternalServerError)
+               .CircuitBreakerAsync(3, TimeSpan.FromMinutes(1), OnBreak, OnReset, OnHalfOpen);
+
+
+        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy =
+            Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+               .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+        static IAsyncPolicy<HttpResponseMessage> FallbackPolicy =
+            Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                .FallbackAsync(FallbackAction, OnFallbackAsync);
+
+        static Task OnFallbackAsync(DelegateResult<HttpResponseMessage> response, Context context)
         {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-        }
-
-        static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-        {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .CircuitBreakerAsync(
-                handledEventsAllowedBeforeBreaking: 3,
-                durationOfBreak: TimeSpan.FromSeconds(10));
-        }
-
-        static IAsyncPolicy<HttpResponseMessage> GetFallbackPolicy()
-        {
-            return Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-                    .FallbackAsync(FallbackAction, OnFallbackAsync);
-        }
-
-
-
-        //https://www.twilio.com/blog/polly-fallbacks-dot-net-service-communication
-        private static Task OnFallbackAsync(DelegateResult<HttpResponseMessage> response, Context context)
-        {
-            Console.WriteLine("About to call the fallback action. This is a good place to do some logging");
+            Console.WriteLine(">>>>>>>>>>>>> About to call the fallback action. This is a good place to do some logging");
             return Task.CompletedTask;
         }
 
-        private static Task<HttpResponseMessage> FallbackAction(DelegateResult<HttpResponseMessage> responseToFailedRequest, Context context, CancellationToken cancellationToken)
+        static Task<HttpResponseMessage> FallbackAction(DelegateResult<HttpResponseMessage> responseToFailedRequest, Context context, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Fallback action is executing");
+            Console.WriteLine(">>>>>>>>>>>>> Fallback action is executing");
 
             HttpResponseMessage httpResponseMessage = new HttpResponseMessage(responseToFailedRequest.Result.StatusCode)
             {
@@ -68,5 +55,21 @@ namespace BasicsForExperts.Web.Extensions
             };
             return Task.FromResult(httpResponseMessage);
         }
+
+        static void OnHalfOpen()
+        {
+            Console.WriteLine(">>>>>>>>>>>>> Circuit in test mode, one request will be allowed.");
+        }
+
+        static void OnReset()
+        {
+            Console.WriteLine(">>>>>>>>>>>>> Circuit closed, requests flow normally.");
+        }
+
+        static void OnBreak(DelegateResult<HttpResponseMessage> result, TimeSpan ts)
+        {
+            Console.WriteLine(">>>>>>>>>>>>> Circuit cut, requests will not flow.");
+        }
     }
+
 }

@@ -11,7 +11,7 @@ namespace BasicsForExperts.Web.DTOs
         [JsonPropertyName("id")]
         public int Id { get; init; }
 
-        [JsonPropertyName("name")]
+        [JsonPropertyName("Name")]
         public string Name { get; init; }
 
         [JsonPropertyName("type")]

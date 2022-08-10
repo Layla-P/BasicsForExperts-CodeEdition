@@ -3,6 +3,10 @@ using BasicsForExperts.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net;
+using Polly.CircuitBreaker;
+using BasicsForExperts.Web.Extensions;
+using BasicsForExperts.Web.Entities;
+using System.Text.Json;
 
 namespace BasicsForExperts.Web.Controllers;
 
@@ -12,12 +16,10 @@ public class WaffleOrderController : ControllerBase
 {
     //private readonly WaffleCreationService _waffleCreationService;
     private readonly IWaffleCreationService _waffleCreationService;
-    private readonly WaffleIngredientService _ingredientService;
 
-    public WaffleOrderController(IWaffleCreationService waffleCreationService, WaffleIngredientService ingredientService)
+    public WaffleOrderController(IWaffleCreationService waffleCreationService)
     {
         _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
-        _ingredientService =   ingredientService ?? throw new ArgumentNullException(nameof(ingredientService));
     }
 
     //public WaffleOrderController(WaffleCreationService waffleCreationService)
@@ -33,22 +35,7 @@ public class WaffleOrderController : ControllerBase
 
     //}
 
-    //[HttpGet("/ingredients")]
-    //public async Task<ActionResult> GetIngredients()
-    //{
-       
-    //    var httpResponseMessage = await _ingredientService.GetIngredients();
 
-       
-    //    if (httpResponseMessage.IsSuccessStatusCode)
-    //    {
-    //        var ingredients = await httpResponseMessage.Content.ReadAsStringAsync();
-    //        return Ok(ingredients);
-    //    }
-
-
-    //    return StatusCode((int)httpResponseMessage.StatusCode, httpResponseMessage.Content.ReadAsStringAsync());
-    //}
 
 
     [HttpGet]
@@ -56,8 +43,10 @@ public class WaffleOrderController : ControllerBase
     public async Task<JsonResult> Get()
     {
         var response = await _waffleCreationService.StartWaffleCreation();
-
-        return new JsonResult(new { toppings = response.toppings, bases = response.bases });
+        var stringContent = await response.Content.ReadAsStringAsync();
+        var content = JsonSerializer
+            .Deserialize<(List<OrderTopping> toppings, List<string> bases)>(stringContent);
+        return new JsonResult(new { toppings = content.toppings, bases = content.bases });
     }
 
     [HttpPost]
