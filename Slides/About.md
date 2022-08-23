@@ -79,7 +79,7 @@ Twitch: @LaylaCodesIt</br>
 </ul>
 <ul>
     <li>Minimal APIs</li> 
-    <li>HTTP clients and policies </li> 
+    <li>HTTP clients and HTTP client factories </li> 
     <li>Resiliency and circuit breakers with Polly</li> 
 </ul>
 
