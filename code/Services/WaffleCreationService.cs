@@ -1,5 +1,8 @@
 ﻿using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Entities;
+using BasicsForExperts.Web.Extensions;
+using Polly.CircuitBreaker;
+using System.Text.Json;
 
 namespace BasicsForExperts.Web.Services
 {
@@ -22,17 +25,32 @@ namespace BasicsForExperts.Web.Services
             };
         }
 
-        public async Task<(List<OrderTopping> toppings, List<string> bases)> StartWaffleCreation()
+        public async Task<HttpResponseMessage> StartWaffleCreation()
         {
-            var ingredientDtos = await _waffleIngredientService.GetIngredients();
-            var toppings = new List<OrderTopping>();
+            List<ToppingDto> ingedients = new();
+            HttpResponseMessage response = new();
 
-            toppings = ingredientDtos
+            if (IServiceCollectionExtensions.CircuitBreakerPolicy.CircuitState == CircuitState.Open)
+            {
+                response.StatusCode = System.Net.HttpStatusCode.ServiceUnavailable;
+                response.Content = new StringContent("The service is currently unavailable, try again in a few moments");
+                return response;
+            }
+            else
+            {
+                ingedients = await _waffleIngredientService.GetIngredients();
+            }
+
+            var toppings = ingedients
                 .Select(i => new OrderTopping { Id = i.Id, Name = i.Name, WaffleType = i.Type }).ToList();
 
             List<string> bases = new() { "round", "square", "heart" };
+
+            var content = JsonSerializer.Serialize(new IngredientsDto(toppings, bases));
+
+            response.Content = new StringContent(content);
             //named tuples
-            return (toppings, bases);
+            return response;
         }
 
         public Task<Order> CreateWaffle(Order order)

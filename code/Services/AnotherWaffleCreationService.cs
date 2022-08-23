@@ -10,7 +10,7 @@ namespace BasicsForExperts.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task<(List<OrderTopping> toppings, List<string> bases)> StartWaffleCreation()
+        public Task<HttpResponseMessage> StartWaffleCreation()
         {
             return null;
         }

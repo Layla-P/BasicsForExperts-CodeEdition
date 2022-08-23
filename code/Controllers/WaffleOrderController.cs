@@ -1,11 +1,17 @@
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Net;
+using Polly.CircuitBreaker;
+using BasicsForExperts.Web.Extensions;
+using BasicsForExperts.Web.Entities;
+using System.Text.Json;
 
 namespace BasicsForExperts.Web.Controllers;
 
 [ApiController]
-[Route("api/layla")]
+[Route("[controller]")]
 public class WaffleOrderController : ControllerBase
 {
     //private readonly WaffleCreationService _waffleCreationService;
@@ -14,7 +20,6 @@ public class WaffleOrderController : ControllerBase
     public WaffleOrderController(IWaffleCreationService waffleCreationService)
     {
         _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
-
     }
 
     //public WaffleOrderController(WaffleCreationService waffleCreationService)
@@ -30,13 +35,18 @@ public class WaffleOrderController : ControllerBase
 
     //}
 
+
+
+
     [HttpGet]
     //[Route("Options")]
     public async Task<JsonResult> Get()
     {
         var response = await _waffleCreationService.StartWaffleCreation();
-
-        return new JsonResult(new { toppings = response.toppings, bases = response.bases });
+        var stringContent = await response.Content.ReadAsStringAsync();
+        var content = JsonSerializer
+            .Deserialize<(List<OrderTopping> toppings, List<string> bases)>(stringContent);
+        return new JsonResult(new { toppings = content.toppings, bases = content.bases });
     }
 
     [HttpPost]

@@ -1,6 +1,10 @@
+using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Services;
+using System.Text.Json;
+
 // most of the general using statements are now implicit.
+// Use a global usings file for anything you wish to be globally scoped
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -18,24 +22,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Adding dependencies
-// Add an HttpClient that's available to any class requesting HttpClient - this will be managed by the HttpClientFactory
-builder.Services.AddHttpClient();
-builder.Services.AddSingleton<WaffleIngredientService>();
-builder.Services.AddSingleton<IWaffleCreationService, WaffleCreationService>();
+// Add an HttpClient that's available to any class 
+// requesting HttpClient,this will be managed by the HttpClientFactory
+
+
+// Add any services to the IoC container
+// Different lifecycles and implementations
+// Disposing of things correctly
+
 
 //builder.Services.AddDatabases(builder.Configuration);
 
 
 // If there are a lot of dependencies, the program file will become unmanageable, so we can abstract it out into an extension
-//builder.Services.AddDependencies();
+builder.Services.AddDependencies();
 //builder.Services.AddCustomSerializers();
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-//builder.Services.AddClientsAndPolicies();
-
-
-
-
+builder.Services.AddClientsAndPolicies();
 
 var app = builder.Build();
 
@@ -49,25 +53,34 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 
 app.MapControllers();
 
 
-// Minimal APIs architecture allows us to add lightweight api endpoints directly to the WebApplication without the need for a controller
 
-app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) => 
-        {
-            var response = await wcs.StartWaffleCreation();
-           return new { toppings = response.toppings, bases = response.bases 
-            };
-        });
+// Minimal APIs architecture allows us to add lightweight 
+// api endpoints directly to the WebApplication without the 
+// need for a controller
 
-// If we have a lot of apis, the program file could get messy, so just like everything else, we can pull it out into an extension method
-await app.AddApisAsync();
+app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
+{
+    var response = await wcs.StartWaffleCreation();
+    var stringContent = await response.Content.ReadAsStringAsync();
+    var content = JsonSerializer
+        .Deserialize<IngredientsDto>(stringContent);
 
-// The following extension method shows how to access Eureka to get registered apps.
+    return new { toppings = content.Toppings, bases = content.Bases };
+
+});
+
+// If we have a lot of apis, the program file could get messy, 
+// so just like everything else, we can pull it out into an extension method
+//await app.AddApisAsync();
+
+// The following extension method shows how to access 
+// Eureka to get registered apps.
 
 
 app.Run();
 
+public partial class Program { }
