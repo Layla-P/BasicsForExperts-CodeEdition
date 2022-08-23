@@ -6,26 +6,26 @@ heading{
     color:SeaGreen;
     font-size: 26pt;
     font-weight: bold;
-    font-family: "franklin gothic";
+    font-family: "Roboto";
      display: inline-block;
 }
 sub-heading{
     color:dark-gray;
     font-size: 18pt;
     font-weight: bold;
-   font-family: "franklin gothic";
+   font-family: "Roboto";
 }
 job-heading{
     color:dark-gray;
     font-size: 12pt;
     font-weight: bold;
-    font-family: "franklin gothic";
+    font-family: "Roboto";
 }
 heading2{
     color:DarkSlateBlue;
     font-size: 20pt;
     font-weight: bold;
-    font-family: "franklin gothic";
+    font-family: "Roboto";
      display: inline-block;
 }
 img{
@@ -36,7 +36,7 @@ img{
 }
 ul{
     float:left;
-   font-family: "ariel";
+   font-family: "Roboto";
 }
 
 links {
@@ -75,11 +75,9 @@ Twitch: @LaylaCodesIt</br>
     <li>Top-level statements and minimal hosting model </li> 
     <li>Global using directives</li> 
     <li>Dependency Injection and IoC</li> 
-    
-</ul>
-<ul>
     <li>Minimal APIs</li> 
     <li>HTTP clients and HTTP client factories </li> 
     <li>Resiliency and circuit breakers with Polly</li> 
+    <li>And maybe some other stuff if we have time!</li>
 </ul>
 
