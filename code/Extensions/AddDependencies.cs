@@ -4,11 +4,7 @@ namespace BasicsForExperts.Web.Extensions
 {
     public static partial class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddDependencies(this IServiceCollection services)
-        {
-            
-            return services;
-        }
+
 
         private static IServiceCollection AddMarketingDependencies(this IServiceCollection services)
         {

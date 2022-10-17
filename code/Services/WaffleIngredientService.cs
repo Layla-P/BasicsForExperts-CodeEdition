@@ -1,32 +1,32 @@
 ﻿using BasicsForExperts.Web.DTOs;
 using System.Text.Json;
 
-namespace BasicsForExperts.Web.Services
+namespace BasicsForExperts.Web.Services;
+
+public class WaffleIngredientService
 {
-    public class WaffleIngredientService
+    private readonly HttpClient _httpClient;
+    
+    public WaffleIngredientService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClient;
+    }
+
+    public async Task<List<ToppingDto>> GetIngredients()
+    { 
         
-        public WaffleIngredientService(HttpClient httpClient)
+        var response = await _httpClient.GetAsync("http://localhost:7071/api/GetIngredients");
+
+        if (response.IsSuccessStatusCode)
         {
-            _httpClient = httpClient;
+            Console.WriteLine(">>>>>>>>>>>>> response is A-okay!");
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var toppings = JsonSerializer.Deserialize<List<ToppingDto>>(responseBody);
+            return toppings;
         }
-
-        public async Task<List<ToppingDto>> GetIngredients()
-        { 
-            
-            var response = await _httpClient.GetAsync("http://localhost:7071/api/GetIngredients");
-
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine(">>>>>>>>>>>>> response is A-okay!");
-                string responseBody = await response.Content.ReadAsStringAsync();
-                var toppings = JsonSerializer.Deserialize<List<ToppingDto>>(responseBody);
-                return toppings;
-            }
-            //handle error here
-            return new List<ToppingDto>();
-            
-        }
+        //handle error here
+        return new List<ToppingDto>();
+        
     }
 }
+

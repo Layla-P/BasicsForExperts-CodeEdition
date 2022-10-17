@@ -4,20 +4,20 @@ about{
 }
 heading{
     color:SeaGreen;
-    font-size: 26pt;
+    font-size: 30pt;
     font-weight: bold;
     font-family: "Roboto";
      display: inline-block;
 }
 sub-heading{
     color:dark-gray;
-    font-size: 18pt;
+    font-size: 20pt;
     font-weight: bold;
    font-family: "Roboto";
 }
 job-heading{
     color:dark-gray;
-    font-size: 12pt;
+    font-size: 16pt;
     font-weight: bold;
     font-family: "Roboto";
 }
@@ -41,7 +41,7 @@ ul{
 
 links {
     display: inline-block;
-    font-size: 10pt;
+    font-size: 14pt;
     width: 100%;    
     margin: 10px 0 30px 0;
    color:SeaGreen;
@@ -50,6 +50,7 @@ links {
 
 
 <heading> ASP .NET Basics for Experts </heading>
+<br/>
 <sub-heading>Hello! My name is Layla</sub-heading>
 <job-heading>Developer Advocate, VMware</job-heading>
 
@@ -70,7 +71,7 @@ Twitch: @LaylaCodesIt</br>
 </links>
 
 <heading2> What we're going to look at... </heading2>
-
+<br/>
 <ul>
     <li>Top-level statements and minimal hosting model </li> 
     <li>Global using directives</li> 

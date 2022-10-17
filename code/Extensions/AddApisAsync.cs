@@ -4,9 +4,10 @@ using BasicsForExperts.Web.Entities;
 using BasicsForExperts.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BasicsForExperts.Web.Extensions;
-public static partial class WebApplicationExtensions
+public static class WebApplicationExtensions
 {
     public static async Task<WebApplication> AddApisAsync(this WebApplication app)
     {
@@ -22,6 +23,11 @@ public static partial class WebApplicationExtensions
 
            return new { toppings = content.Toppings, bases = content.Bases};
 
+        });
+
+        app.MapPost("/GetWaffleToppings", (IWaffleCreationService wcs, [FromBody]Order order) =>
+        {
+            var o = order;
         });
 
         return app;

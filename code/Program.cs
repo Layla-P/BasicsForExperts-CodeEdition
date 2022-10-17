@@ -31,15 +31,10 @@ builder.Services.AddSwaggerGen();
 // Disposing of things correctly
 
 
-//builder.Services.AddDatabases(builder.Configuration);
-
-
 // If there are a lot of dependencies, the program file will become unmanageable, so we can abstract it out into an extension
-builder.Services.AddDependencies();
-//builder.Services.AddCustomSerializers();
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-builder.Services.AddClientsAndPolicies();
+// builder.Services.AddClientsAndPolicies();
 
 var app = builder.Build();
 
@@ -62,8 +57,11 @@ app.MapControllers();
 // api endpoints directly to the WebApplication without the 
 // need for a controller
 
-app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
+app.MapGet("/GetWaffleToppings", async () =>
 {
+    using var httpClient = new HttpClient();
+    var ingredientsService = new WaffleIngredientService(httpClient);
+    var wcs = new WaffleCreationService(ingredientsService);
     var response = await wcs.StartWaffleCreation();
     var stringContent = await response.Content.ReadAsStringAsync();
     var content = JsonSerializer
@@ -77,8 +75,6 @@ app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
 // so just like everything else, we can pull it out into an extension method
 //await app.AddApisAsync();
 
-// The following extension method shows how to access 
-// Eureka to get registered apps.
 
 
 app.Run();
