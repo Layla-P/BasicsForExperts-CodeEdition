@@ -1,35 +1,36 @@
 ﻿<style>
 about{
    float: left; 
+font-size: 20pt;
 }
 heading{
     color:SeaGreen;
-    font-size: 36pt;
+    font-size: 42pt;
     font-weight: bold;
     font-family: "Roboto";
      display: inline-block;
 }
 sub-heading{
     color:dark-gray;
-    font-size: 26pt;
+    font-size: 34pt;
     font-weight: bold;
    font-family: "Roboto";
 }
 job-heading{
     color:dark-gray;
-    font-size: 20pt;
+    font-size: 26pt;
     font-weight: bold;
     font-family: "Roboto";
 }
 heading2{
     color:DarkSlateBlue;
-    font-size: 24pt;
+    font-size: 30pt;
     font-weight: bold;
     font-family: "Roboto";
      display: inline-block;
 }
 img{
- height: 300px;
+ height: 400px;
  border: solid 2px SeaGreen;
  float: left;
 
@@ -37,11 +38,12 @@ img{
 ul{
     float:left;
    font-family: "Roboto";
+    font-size: 20pt;
 }
 
 links {
     display: inline-block;
-    font-size: 14pt;
+    font-size: 18pt;
     width: 100%;    
     margin: 10px 0 30px 0;
    color:SeaGreen;
@@ -52,10 +54,13 @@ links {
 <heading> ASP .NET Basics for Experts </heading>
 <br/>
 <sub-heading>Hello! My name is Layla</sub-heading>
+<br/>
 <job-heading>Developer Advocate, VMware</job-heading>
-
+<br/>
 <about>
+<br/>
 <img src="layla-headshot.jpg"/>
+
 <ul>
     <li> Microsoft MVP for developer technologies </li> 
     <li> GitHub Star</li> 
