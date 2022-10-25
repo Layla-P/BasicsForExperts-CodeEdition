@@ -4,32 +4,32 @@ about{
 }
 heading{
     color:SeaGreen;
-    font-size: 30pt;
+    font-size: 36pt;
     font-weight: bold;
     font-family: "Roboto";
      display: inline-block;
 }
 sub-heading{
     color:dark-gray;
-    font-size: 20pt;
+    font-size: 26pt;
     font-weight: bold;
    font-family: "Roboto";
 }
 job-heading{
     color:dark-gray;
-    font-size: 16pt;
+    font-size: 20pt;
     font-weight: bold;
     font-family: "Roboto";
 }
 heading2{
     color:DarkSlateBlue;
-    font-size: 20pt;
+    font-size: 24pt;
     font-weight: bold;
     font-family: "Roboto";
      display: inline-block;
 }
 img{
- height: 200px;
+ height: 300px;
  border: solid 2px SeaGreen;
  float: left;
 

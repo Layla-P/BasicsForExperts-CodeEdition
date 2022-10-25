@@ -12,7 +12,8 @@ public static partial class IServiceCollectionExtensions
     public static IServiceCollection AddClientsAndPolicies(this IServiceCollection services)
     {
        
-        services.AddHttpClient();
+     
+        
 
         // Instead of just using services.AddHttpClient()
 
@@ -24,9 +25,7 @@ public static partial class IServiceCollectionExtensions
             Policy.WrapAsync(FallbackPolicy, GetRetryPolicy, CircuitBreakerPolicy);
         
         // Strongly typed HTTP client
-        services.AddHttpClient<WaffleIngredientService>()
-                .AddPolicyHandler(wrapOfRetryAndFallback);
-
+     
         return services;
     }
 
