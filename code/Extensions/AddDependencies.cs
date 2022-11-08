@@ -18,6 +18,17 @@ namespace BasicsForExperts.Web.Extensions
            
             return services;
         }
+
+        public static IServiceCollection AddLifecycles(this IServiceCollection services)
+        {
+            // singleton
+            services.AddSingleton<Lifecycles>();
+            // scoped
+            //services.AddScoped<Lifecycles>();
+            // transient
+            //services.AddTransient<Lifecycles>();
+            return services;
+        }
     }
 }
 

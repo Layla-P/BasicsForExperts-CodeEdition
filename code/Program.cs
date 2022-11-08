@@ -36,6 +36,11 @@ builder.Services.AddSwaggerGen();
 // Add typed HttpClients and configure policies, circuit breaks and failovers
 // builder.Services.AddClientsAndPolicies();
 
+
+//Lifecycles
+builder.Services.AddLifecycles();
+
+
 var app = builder.Build();
 
 
@@ -75,7 +80,8 @@ app.MapGet("/GetWaffleToppings", async () =>
 // so just like everything else, we can pull it out into an extension method
 //await app.AddApisAsync();
 
-
+// Lifecycles
+//app.MapGet("/lifecycles", (Lifecycles l1, Lifecycles l2) => new { ListOne = l1.GetInts(), ListTwo = l2.GetInts() });
 
 app.Run();
 
