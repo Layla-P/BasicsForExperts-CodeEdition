@@ -1,7 +1,7 @@
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Services;
-using System.Text.Json;
+
 
 // most of the general using statements are now implicit.
 // Use a global usings file for anything you wish to be globally scoped
@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen();
 //Adding dependencies
 // Add an HttpClient that's available to any class 
 // requesting HttpClient,this will be managed by the HttpClientFactory
-
+builder.Services.AddDependencies();
 
 // Add any services to the IoC container
 // Different lifecycles and implementations
@@ -34,12 +34,14 @@ builder.Services.AddSwaggerGen();
 // If there are a lot of dependencies, the program file will become unmanageable, so we can abstract it out into an extension
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-// builder.Services.AddClientsAndPolicies();
+builder.Services.AddClientsAndPolicies();
 
 
 //Lifecycles
-builder.Services.AddLifecycles();
+//builder.Services.AddLifecycles();
 
+
+builder.Services.AddDatabases(builder.Configuration);
 
 var app = builder.Build();
 
@@ -62,23 +64,22 @@ app.MapControllers();
 // api endpoints directly to the WebApplication without the 
 // need for a controller
 
-app.MapGet("/GetWaffleToppings", async () =>
-{
-    using var httpClient = new HttpClient();
-    var ingredientsService = new WaffleIngredientService(httpClient);
-    var wcs = new WaffleCreationService(ingredientsService);
-    var response = await wcs.StartWaffleCreation();
-    var stringContent = await response.Content.ReadAsStringAsync();
-    var content = JsonSerializer
-        .Deserialize<IngredientsDto>(stringContent);
-
-    return new { toppings = content.Toppings, bases = content.Bases };
-
-});
+// app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
+// {
+//    
+//    
+//     var response = await wcs.StartWaffleCreation();
+//     var stringContent = await response.Content.ReadAsStringAsync();
+//     var content = JsonSerializer
+//         .Deserialize<IngredientsDto>(stringContent);
+//
+//     return new { toppings = content.Toppings, bases = content.Bases };
+//
+// });
 
 // If we have a lot of apis, the program file could get messy, 
 // so just like everything else, we can pull it out into an extension method
-//await app.AddApisAsync();
+await app.AddApisAsync();
 
 // Lifecycles
 //app.MapGet("/lifecycles", (Lifecycles l1, Lifecycles l2) => new { ListOne = l1.GetInts(), ListTwo = l2.GetInts() });

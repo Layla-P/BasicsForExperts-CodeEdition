@@ -6,11 +6,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net;
+using System.Text.Json;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace Ingredients.Api
 {
@@ -30,19 +31,38 @@ namespace Ingredients.Api
             log.LogInformation("C# HTTP trigger function processed a request.");
             var response = await _httpClient.GetAsync(URL);
 
+       
             //var rand = new Random();
             //var next = rand.Next(0, 10);
             //if (next % 2 == 1)
-            //{
-            //    response.StatusCode = HttpStatusCode.InternalServerError;
-            //    log.LogCritical("ERROR ERROR");
+            ///
+            ///
+            response.StatusCode = HttpStatusCode.InternalServerError;
+                log.LogCritical("ERROR ERROR");
             // }
             // else
             // {
-                log.LogCritical("All is good");
+             //   log.LogCritical("All is good");
             // }
             
             return response;
         }
     }
 }
+
+
+
+
+
+
+
+
+// var content = IngredientsApiSpoof.GetIngredients();
+// var options = new JsonSerializerOptions()
+// {
+//     IncludeFields = true,
+// };
+// var jsonContent = JsonSerializer.Serialize<Ingredient>(content, options);
+// var response = new HttpResponseMessage();
+// response.Content = new JsonContent(jsonContent);
+// response.StatusCode = HttpStatusCode.OK;

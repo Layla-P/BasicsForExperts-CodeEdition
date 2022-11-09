@@ -12,20 +12,28 @@ public static partial class IServiceCollectionExtensions
     public static IServiceCollection AddClientsAndPolicies(this IServiceCollection services)
     {
        
-     
-        
+        services.AddHttpClient();
+        //services.AddSingleton<WaffleIngredientService>();
+
+        services.AddHttpClient("oredev", client =>
+        {
+            client.BaseAddress = new Uri("http://something.com");
+        });
 
         // Instead of just using services.AddHttpClient()
 
         // named HTTP client
 
+       
         
         // Polly is one of the best options for HTTP resiliency
             IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
             Policy.WrapAsync(FallbackPolicy, GetRetryPolicy, CircuitBreakerPolicy);
         
         // Strongly typed HTTP client
-     
+        services.AddHttpClient<WaffleIngredientService>()
+            .AddPolicyHandler(wrapOfRetryAndFallback);
+        
         return services;
     }
 

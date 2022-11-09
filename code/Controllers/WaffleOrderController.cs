@@ -17,6 +17,11 @@ public class WaffleOrderController : ControllerBase
     //private readonly WaffleCreationService _waffleCreationService;
     private readonly IWaffleCreationService _waffleCreationService;
 
+    public WaffleOrderController(IHttpClientFactory fac)
+    {
+        var client = fac.CreateClient("oredev");
+    }
+    
     public WaffleOrderController(IWaffleCreationService waffleCreationService)
     {
         _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
