@@ -1,11 +1,15 @@
+
+
+using BasicsForExperts.Web.Data;
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Services;
+using Microsoft.EntityFrameworkCore;
 
 
 // most of the general using statements are now implicit.
 // Use a global usings file for anything you wish to be globally scoped
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 
 builder.Configuration
@@ -23,25 +27,26 @@ builder.Services.AddSwaggerGen();
 
 //Adding dependencies
 // Add an HttpClient that's available to any class 
-// requesting HttpClient,this will be managed by the HttpClientFactory
 builder.Services.AddDependencies();
+builder.Services.AddClientsAndPolicies();
+// requesting HttpClient,this will be managed by the HttpClientFactory
 
 // Add any services to the IoC container
 // Different lifecycles and implementations
 // Disposing of things correctly
-
+builder.Services.AddDatabases(builder.Configuration);
 
 // If there are a lot of dependencies, the program file will become unmanageable, so we can abstract it out into an extension
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-builder.Services.AddClientsAndPolicies();
+
+// adding dependencies in this way allows the IoC container to manage lifecycle and call dispose
+// see great blog series by Steve Collins - http://stevetalkscode.co.uk
 
 
 //Lifecycles
-//builder.Services.AddLifecycles();
+builder.Services.AddLifecycles();
 
-
-builder.Services.AddDatabases(builder.Configuration);
 
 var app = builder.Build();
 
@@ -64,23 +69,12 @@ app.MapControllers();
 // api endpoints directly to the WebApplication without the 
 // need for a controller
 
-// app.MapGet("/GetWaffleToppings", async (IWaffleCreationService wcs) =>
-// {
-//    
-//    
-//     var response = await wcs.StartWaffleCreation();
-//     var stringContent = await response.Content.ReadAsStringAsync();
-//     var content = JsonSerializer
-//         .Deserialize<IngredientsDto>(stringContent);
-//
-//     return new { toppings = content.Toppings, bases = content.Bases };
-//
-// });
+
 
 // If we have a lot of apis, the program file could get messy, 
 // so just like everything else, we can pull it out into an extension method
-await app.AddApisAsync();
 
+app.AddApis();
 // Lifecycles
 //app.MapGet("/lifecycles", (Lifecycles l1, Lifecycles l2) => new { ListOne = l1.GetInts(), ListTwo = l2.GetInts() });
 

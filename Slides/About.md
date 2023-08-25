@@ -64,6 +64,7 @@ links {
 <ul>
     <li> Microsoft MVP for developer technologies </li> 
     <li> GitHub Star</li> 
+    <li> Progress Ninja</li>
     <li> Founder, #WomenOfDotNet Initiative</li> 
     <li> Former Director, .NET Foundation</li> 
 </ul>
@@ -72,7 +73,7 @@ links {
 <links>
 GitHub: Layla-P - (where you can find this code)</br>
 Twitter: @LaylaCodesIt</br>
-Twitch: @LaylaCodesIt</br>
+YouTube: @LaylaCodesIt</br>
 </links>
 
 <heading2> What we're going to look at... </heading2>

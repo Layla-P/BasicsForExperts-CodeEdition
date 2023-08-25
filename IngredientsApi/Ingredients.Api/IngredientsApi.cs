@@ -32,18 +32,17 @@ namespace Ingredients.Api
             var response = await _httpClient.GetAsync(URL);
 
        
-            //var rand = new Random();
-            //var next = rand.Next(0, 10);
-            //if (next % 2 == 1)
-            ///
-            ///
+            var rand = new Random();
+            var next = rand.Next(0, 10);
+            if (next % 2 == 1)
+            {
             response.StatusCode = HttpStatusCode.InternalServerError;
                 log.LogCritical("ERROR ERROR");
-            // }
-            // else
-            // {
-             //   log.LogCritical("All is good");
-            // }
+            }
+            else
+            {
+               log.LogCritical("All is good");
+            }
             
             return response;
         }

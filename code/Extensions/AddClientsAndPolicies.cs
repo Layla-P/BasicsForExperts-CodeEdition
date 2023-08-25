@@ -11,31 +11,32 @@ public static partial class IServiceCollectionExtensions
     //https://github.com/App-vNext/Polly
     public static IServiceCollection AddClientsAndPolicies(this IServiceCollection services)
     {
+       // Instead of just using services.AddHttpClient()
        
-        services.AddHttpClient();
-        //services.AddSingleton<WaffleIngredientService>();
-
-        services.AddHttpClient("oredev", client =>
-        {
-            client.BaseAddress = new Uri("http://something.com");
-        });
-
-        // Instead of just using services.AddHttpClient()
-
         // named HTTP client
+        
+        
+        services.AddHttpClient();
+        services.AddHttpClient("vslive", client =>
+        {
+            client.BaseAddress = new Uri("https://vslive.com");
+        });
+        
 
-       
-        
         // Polly is one of the best options for HTTP resiliency
-            IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
-            Policy.WrapAsync(FallbackPolicy, GetRetryPolicy, CircuitBreakerPolicy);
         
+        IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
+            Policy.WrapAsync( GetRetryPolicy, CircuitBreakerPolicy);
+
         // Strongly typed HTTP client
+       
         services.AddHttpClient<WaffleIngredientService>()
             .AddPolicyHandler(wrapOfRetryAndFallback);
         
+        
         return services;
     }
+
 
 
     public static readonly AsyncCircuitBreakerPolicy<HttpResponseMessage> CircuitBreakerPolicy =
@@ -48,27 +49,7 @@ public static partial class IServiceCollectionExtensions
         Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
             .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
-    static IAsyncPolicy<HttpResponseMessage> FallbackPolicy =
-        Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-            .FallbackAsync(FallbackAction, OnFallbackAsync);
-
-    static Task OnFallbackAsync(DelegateResult<HttpResponseMessage> response, Context context)
-    {
-        Console.WriteLine(">>>>>>>>>>>>> About to call the fallback action. This is a good place to do some logging");
-        return Task.CompletedTask;
-    }
-
-    static Task<HttpResponseMessage> FallbackAction(DelegateResult<HttpResponseMessage> responseToFailedRequest, Context context, CancellationToken cancellationToken)
-    {
-        Console.WriteLine(">>>>>>>>>>>>> Fallback action is executing");
-
-        HttpResponseMessage httpResponseMessage = new HttpResponseMessage(responseToFailedRequest.Result.StatusCode)
-        {
-            Content = new StringContent($"The fallback executed, the original error was {responseToFailedRequest.Result.ReasonPhrase}")
-        };
-        return Task.FromResult(httpResponseMessage);
-    }
+    
 
     static void OnHalfOpen()
     {
@@ -85,3 +66,5 @@ public static partial class IServiceCollectionExtensions
         Console.WriteLine(">>>>>>>>>>>>> Circuit cut, requests will not flow.");
     }
 }
+
+

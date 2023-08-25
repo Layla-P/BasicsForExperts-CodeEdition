@@ -19,14 +19,14 @@ public class WaffleOrderController : ControllerBase
 
     public WaffleOrderController(IHttpClientFactory fac)
     {
-        var client = fac.CreateClient("oredev");
+        var client = fac.CreateClient("vslive");
     }
     
-    public WaffleOrderController(IWaffleCreationService waffleCreationService)
-    {
-        _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
-        
-    }
+    // public WaffleOrderController(IWaffleCreationService waffleCreationService)
+    // {
+    //     _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
+    //     
+    // }
 
     //public WaffleOrderController(WaffleCreationService waffleCreationService)
     //{
@@ -34,12 +34,12 @@ public class WaffleOrderController : ControllerBase
 
     //}
 
-    //public WaffleOrderController(IEnumerable<IWaffleCreationService> waffleCreationServiceCollection)
-    //{
-    //    _waffleCreationService = waffleCreationServiceCollection
-    //        .First(x => x.GetType() == typeof(WaffleCreationService)) ?? throw new ArgumentNullException("WaffleCreationService"); ;
+    public WaffleOrderController(IEnumerable<IWaffleCreationService> waffleCreationServiceCollection)
+    {
+        _waffleCreationService = waffleCreationServiceCollection
+            .First(x => x.GetType() == typeof(WaffleCreationService)) ?? throw new ArgumentNullException("WaffleCreationService"); ;
 
-    //}
+    }
 
 
 
