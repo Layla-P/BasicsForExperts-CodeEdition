@@ -1,5 +1,6 @@
 
 
+using System.Text.Json;
 using BasicsForExperts.Web.Data;
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Extensions;
@@ -13,12 +14,16 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 
 builder.Configuration
+    //.AddJsonFile("/Users/layla/Documents/Repos/Talks/BasicsForExperts-CodeEdition/external.json", optional: true, reloadOnChange: true)
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    //.AddJsonFile("/Users/layla/Documents/Repos/Talks/BasicsForExperts-CodeEdition/external.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .AddCommandLine(args)
     .Build();
-// we have everything that we need, and nothing that we don't
+
+
+var ext = builder.Configuration.GetValue<string>("ExternalValue");
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,21 +32,18 @@ builder.Services.AddSwaggerGen();
 
 //Adding dependencies
 // Add an HttpClient that's available to any class 
-builder.Services.AddDependencies();
-builder.Services.AddClientsAndPolicies();
+
+
 // requesting HttpClient,this will be managed by the HttpClientFactory
 
 // Add any services to the IoC container
 // Different lifecycles and implementations
 // Disposing of things correctly
-builder.Services.AddDatabases(builder.Configuration);
+//builder.Services.AddDatabases(builder.Configuration);
 
 // If there are a lot of dependencies, the program file will become unmanageable, so we can abstract it out into an extension
 
 // Add typed HttpClients and configure policies, circuit breaks and failovers
-
-// adding dependencies in this way allows the IoC container to manage lifecycle and call dispose
-// see great blog series by Steve Collins - http://stevetalkscode.co.uk
 
 
 //Lifecycles
@@ -70,11 +72,27 @@ app.MapControllers();
 // need for a controller
 
 
+ app.MapGet("/GetWaffleToppings", async () =>
+        {
+            var httpClient = new HttpClient();
+            var wis = new WaffleIngredientService(httpClient);
+            var wcs = new WaffleCreationService(wis);
+            var response = await wcs.StartWaffleCreation();
+            var stringContent = await response.Content.ReadAsStringAsync();
+            var content = JsonSerializer
+                .Deserialize<IngredientsDto>(stringContent);
+
+            return new { toppings = content.Toppings, bases = content.Bases };
+
+        });
+
+
 
 // If we have a lot of apis, the program file could get messy, 
 // so just like everything else, we can pull it out into an extension method
 
-app.AddApis();
+
+//app.AddApis();
 // Lifecycles
 //app.MapGet("/lifecycles", (Lifecycles l1, Lifecycles l2) => new { ListOne = l1.GetInts(), ListTwo = l2.GetInts() });
 

@@ -23,6 +23,7 @@ namespace Ingredients.Api
         {
             _httpClient = new HttpClient();
         }
+        
         [FunctionName("GetIngredients")]
         public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
@@ -36,7 +37,7 @@ namespace Ingredients.Api
             var next = rand.Next(0, 10);
             if (next % 2 == 1)
             {
-            response.StatusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = HttpStatusCode.InternalServerError;
                 log.LogCritical("ERROR ERROR");
             }
             else

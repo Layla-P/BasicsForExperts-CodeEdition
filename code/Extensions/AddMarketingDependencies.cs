@@ -9,8 +9,8 @@ public static partial class IServiceCollectionExtensions
         // adding dependencies in this way allows the IoC container to manage lifecycle and call dispose
         // see great blog series by Steve Collins - http://stevetalkscode.co.uk
         MarketingPrivateDependency pmd = new();
-        
-        services.AddSingleton(ctx => new MarketingEndpoints(pmd));
+        MarketingEndpoints me = new(pmd);
+        services.AddSingleton(me);
         return services;
     }
 

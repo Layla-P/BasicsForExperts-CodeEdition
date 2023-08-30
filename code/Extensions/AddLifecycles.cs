@@ -11,7 +11,7 @@ public static partial class  IServiceCollectionExtensions
         // scoped
         //services.AddScoped<Lifecycles>();
         // transient
-        services.AddTransient<Lifecycles>();
+        //services.AddTransient<Lifecycles>();
         return services;
     }
 }

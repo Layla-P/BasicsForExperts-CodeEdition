@@ -16,23 +16,17 @@ public static partial class IServiceCollectionExtensions
         // named HTTP client
         
         
-        services.AddHttpClient();
-        services.AddHttpClient("vslive", client =>
-        {
-            client.BaseAddress = new Uri("https://vslive.com");
-        });
-        
 
         // Polly is one of the best options for HTTP resiliency
         
-        IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
-            Policy.WrapAsync( GetRetryPolicy, CircuitBreakerPolicy);
+        // IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
+        //     Policy.WrapAsync( GetRetryPolicy, CircuitBreakerPolicy);
 
         // Strongly typed HTTP client
        
-        services.AddHttpClient<WaffleIngredientService>()
-            .AddPolicyHandler(wrapOfRetryAndFallback);
-        
+        // services.AddHttpClient<WaffleIngredientService>()
+        //     .AddPolicyHandler(wrapOfRetryAndFallback);
+        //
         
         return services;
     }
