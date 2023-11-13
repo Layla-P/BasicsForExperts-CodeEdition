@@ -1,45 +1,45 @@
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Net;
-using Polly.CircuitBreaker;
-using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Entities;
-using System.Text.Json;
 
 namespace BasicsForExperts.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WaffleOrderController : ControllerBase
+public class WaffleOrderController: ControllerBase
 {
-    //private readonly WaffleCreationService _waffleCreationService;
     private readonly IWaffleCreationService _waffleCreationService;
+    private readonly IWaffleCreationService _anotherWaffleCreationService;
 
+    private readonly HttpClient _httpClient;
+
+    // New feature! Primary Constructors - below is the old way, which you can still use.
     public WaffleOrderController(IHttpClientFactory fac)
     {
-        var client = fac.CreateClient("vslive");
+        _httpClient = fac.CreateClient(".NET Conf");
     }
+
     
-    // public WaffleOrderController(IWaffleCreationService waffleCreationService)
-    // {
-    //     _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService)); ;
-    //     
-    // }
-
-    //public WaffleOrderController(WaffleCreationService waffleCreationService)
-    //{
-    //    _waffleCreationService = waffleCreationService ?? throw new ArgumentNullException(nameof(waffleCreationService); ;
-
-    //}
-
     public WaffleOrderController(IEnumerable<IWaffleCreationService> waffleCreationServiceCollection)
     {
         _waffleCreationService = waffleCreationServiceCollection
-            .First(x => x.GetType() == typeof(WaffleCreationService)) ?? throw new ArgumentNullException("WaffleCreationService"); ;
+            .First(x => x.GetType() == typeof(WaffleCreationService));
 
+        _anotherWaffleCreationService = waffleCreationServiceCollection
+           .First(x => x.GetType() == typeof(AnotherWaffleCreationService));
     }
+
+
+    // New feature! Keyed DI services in use - N.B. this is very contrived and not a good use of this feature.
+    public WaffleOrderController(
+        [FromKeyedServices("waffleService")] IWaffleCreationService waffleCreationService, 
+        [FromKeyedServices("anotherWaffleService")] IWaffleCreationService anotherWaffleCreationService)
+    {
+        _waffleCreationService = waffleCreationService;
+        _anotherWaffleCreationService = anotherWaffleCreationService;
+    }
+   
 
 
 

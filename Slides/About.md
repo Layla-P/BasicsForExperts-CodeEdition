@@ -81,10 +81,9 @@ YouTube: @LaylaCodesIt</br>
 <ul>
     <li>Top-level statements and minimal hosting model </li> 
     <li>Global using directives</li> 
-    <li>Dependency Injection and IoC</li> 
+    <li>Dependency Injection and IoC -- including new .NET 8 features!</li> 
     <li>Minimal APIs</li> 
     <li>HTTP clients and HTTP client factories </li> 
-    <li>Resiliency and circuit breakers with Polly</li> 
     <li>And maybe some other stuff if we have time!</li>
 </ul>
 

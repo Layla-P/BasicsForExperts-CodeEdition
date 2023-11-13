@@ -4,7 +4,6 @@ using BasicsForExperts.Web.Data;
 using BasicsForExperts.Web.DTOs;
 using BasicsForExperts.Web.Extensions;
 using BasicsForExperts.Web.Services;
-using Microsoft.EntityFrameworkCore;
 
 
 // most of the general using statements are now implicit.
@@ -26,9 +25,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Adding dependencies
+
+
 // Add an HttpClient that's available to any class 
-builder.Services.AddDependencies();
-builder.Services.AddClientsAndPolicies();
+//builder.Services.AddDependencies();
+//builder.Services.AddClientsAndPolicies();
 // requesting HttpClient,this will be managed by the HttpClientFactory
 
 // Add any services to the IoC container
@@ -45,7 +46,7 @@ builder.Services.AddDatabases(builder.Configuration);
 
 
 //Lifecycles
-builder.Services.AddLifecycles();
+//builder.Services.AddLifecycles();
 
 
 var app = builder.Build();
@@ -74,7 +75,19 @@ app.MapControllers();
 // If we have a lot of apis, the program file could get messy, 
 // so just like everything else, we can pull it out into an extension method
 
-app.AddApis();
+app.MapGet("/GetWaffleToppings", async() =>
+{
+    var client = new HttpClient();
+    var wis = new WaffleIngredientService(client);
+    var wcs = new WaffleCreationService(wis);
+    var response = await wcs.StartWaffleCreation();
+    var stringContent = await response.Content.ReadAsStringAsync();
+    var content = JsonSerializer
+        .Deserialize<IngredientsDto>(stringContent);
+
+    return new { toppings = content.Toppings, bases = content.Bases };
+
+});
 // Lifecycles
 //app.MapGet("/lifecycles", (Lifecycles l1, Lifecycles l2) => new { ListOne = l1.GetInts(), ListTwo = l2.GetInts() });
 
