@@ -52,13 +52,9 @@ links {
 
 
 <heading> ASP .NET Basics for Experts </heading>
-<br/>
 <sub-heading>Hello! My name is Layla</sub-heading>
-<br/>
 <job-heading>Developer Advocate, VMware</job-heading>
-<br/>
 <about>
-<br/>
 <img src="layla-headshot.jpg"/>
 
 <ul>
