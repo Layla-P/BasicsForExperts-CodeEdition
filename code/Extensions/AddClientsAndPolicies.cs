@@ -11,25 +11,29 @@ public static partial class IServiceCollectionExtensions
     //https://github.com/App-vNext/Polly
     public static IServiceCollection AddClientsAndPolicies(this IServiceCollection services)
     {
-       // Instead of just using services.AddHttpClient()
-       
-        // named HTTP client
-        
-        
+        // Instead of just using services.AddHttpClient()
 
-        
+        // named HTTP client
+
+        services.AddHttpClient();
+        //services.AddHttpClient<WaffleIngredientService>();
+        services.AddHttpClient("dotnet conf", client =>
+        {
+            client.BaseAddress = new("https://dotnet.conf");
+        });
+
 
         // Polly is one of the best options for HTTP resiliency
-        
-        //IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
-        //    Policy.WrapAsync( GetRetryPolicy, CircuitBreakerPolicy);
+
+        IAsyncPolicy<HttpResponseMessage> wrapOfRetryAndFallback =
+            Policy.WrapAsync(GetRetryPolicy, CircuitBreakerPolicy);
 
         // Strongly typed HTTP client
-       
-        //services.AddHttpClient<WaffleIngredientService>()
-        //    .AddPolicyHandler(wrapOfRetryAndFallback);
-        
-        
+
+        services.AddHttpClient<WaffleIngredientService>()
+            .AddPolicyHandler(wrapOfRetryAndFallback);
+
+
         return services;
     }
 
